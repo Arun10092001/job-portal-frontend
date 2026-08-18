@@ -8,11 +8,15 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 export default function JobListPage() {
   const [jobs, setJobs] = useState([]);
   const username = localStorage.getItem("username");
+  const firstLetter = username ? username.charAt(0).toUpperCase() : "";
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/jobs/`)
       .then((res) => res.json())
-      .then(setJobs)
+      .then((data) => {
+        console.log("jobs from API:", data);
+        setJobs(data);
+      })
       .catch((err) => console.error("Failed to connect", err));
   }, []);
 
@@ -37,7 +41,7 @@ export default function JobListPage() {
           <div className="flex items-center gap-4">
             <span className="text-sm text-gray-600">Hello, {username}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-700 text-sm font-semibold text-white">
-              L
+              {firstLetter}
             </div>
           </div>
         </div>
@@ -52,7 +56,7 @@ export default function JobListPage() {
         </div>
 
         <div className="space-y-4">
-          {jobs.count == 0 ? (
+          {jobs.length === 0 ? (
             <p className="text-gray-500">No Jobs found</p>
           ) : (
             jobs.map((job) => (
@@ -74,6 +78,9 @@ export default function JobListPage() {
                   <span className="rounded bg-gray-100 px-2 py-1">
                     🕒 Full Time
                   </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-600">
+                  {job.description}
                 </div>
                 <div className="mt-4 flex justify-end">
                   <NavLink

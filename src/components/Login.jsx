@@ -1,4 +1,4 @@
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 
 import { NavLink, useNavigate } from "react-router-dom";
 
@@ -40,9 +40,11 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  if (message == "Login Successfully") {
-    navigate("/jobs");
-  }
+  useEffect(() => {
+    if (message == "Login Successfully") {
+      navigate("/jobs");
+    }
+  }, [message, navigate]);
 
   return (
     <div className="bg-gray-50 text-gray-800">
