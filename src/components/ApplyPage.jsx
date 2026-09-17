@@ -1,9 +1,7 @@
 import React from "react";
 import { useActionState } from "react";
-
 import { NavLink, useParams } from "react-router-dom";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+import { fetchWithAuth, logout } from "../utils/api";
 
 export default function ApplyPage() {
   const [result, formAction, isPending] = useActionState(applyJobAction, null, {
@@ -11,7 +9,8 @@ export default function ApplyPage() {
   });
 
   const { jobId } = useParams();
-  const { userId } = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
+  const username = localStorage.getItem("username") || "User";
 
   async function applyJobAction(_, formData) {
     const payload = Object.fromEntries(formData);
@@ -20,11 +19,8 @@ export default function ApplyPage() {
       : { job: jobId, applicants: userId };
 
     try {
-      const res = await fetch(`${API_BASE_URL}/apply/`, {
+      const res = await fetchWithAuth(`/apply/`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(body),
       });
 
@@ -36,7 +32,7 @@ export default function ApplyPage() {
     } catch (error) {
       return {
         message:
-          "Unable to reach the backend at http://127.0.0.1:8000. Start the Django server and retry.",
+          "Unable to reach the backend. Start the Django server and retry.",
         success: false,
       };
     }
@@ -48,23 +44,29 @@ export default function ApplyPage() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
           <h1 className="text-xl font-bold text-blue-700">JobPortal</h1>
 
-          <nav className="hidden md:flex gap-6 text-sm font-medium text-gray-700">
-            <a href="#" className="hover:text-blue-700">
+          <nav className="flex gap-6 text-sm font-medium text-gray-700">
+            <NavLink to="/jobs" className={({ isActive }) => isActive ? "text-blue-700" : "hover:text-blue-700"}>
               Jobs
-            </a>
-            <a href="#" className="hover:text-blue-700">
+            </NavLink>
+            <NavLink to="/companies" className={({ isActive }) => isActive ? "text-blue-700" : "hover:text-blue-700"}>
               Companies
-            </a>
-            <a href="#" className="hover:text-blue-700">
+            </NavLink>
+            <NavLink to="/application" className={({ isActive }) => isActive ? "text-blue-700" : "hover:text-blue-700"}>
               My Applications
-            </a>
+            </NavLink>
           </nav>
 
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">Hello, Logesh</span>
+            <span className="text-sm text-gray-600">Hello, {username}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-700 text-sm font-semibold text-white">
-              L
+              {username.charAt(0).toUpperCase()}
             </div>
+            <button
+              onClick={logout}
+              className="text-sm font-medium text-red-600 hover:text-red-800"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </header>

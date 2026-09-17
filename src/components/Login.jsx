@@ -23,6 +23,8 @@ async function loginAction(_, formData) {
     if (res.ok) {
       localStorage.setItem("userId", String(data.user_id));
       localStorage.setItem("username", data.username);
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
       return data.message || "Login successful";
     }
 
@@ -88,7 +90,7 @@ export default function Login() {
           </ul>
         </section>
 
-        <section className="hidden md:block">
+        <section className="bg-white border rounded-lg p-8 max-w-md w-full mx-auto">
           <h1 className="text-2xl font-bold text-blue-700 text-center">
             JobPortal
           </h1>
@@ -103,7 +105,7 @@ export default function Login() {
               </label>
               <input
                 name="username"
-                type="name"
+                type="text"
                 placeholder="Enter your username"
                 className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-blue-600 focus:ring-1 focus:ring-blue-200 outline-none"
               />

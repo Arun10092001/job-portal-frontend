@@ -15,6 +15,14 @@ async function registerAction(_, formData) {
     body: JSON.stringify(json),
   });
   const data = await res.json();
+  if (res.ok) {
+    return data.message || "Registration Successful";
+  }
+  
+  if (data.username) return `Username: ${data.username[0]}`;
+  if (data.email) return `Email: ${data.email[0]}`;
+  if (data.password) return `Password: ${data.password[0]}`;
+  
   return data.message || "Registration Failed";
 }
 
